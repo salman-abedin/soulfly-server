@@ -14,8 +14,8 @@ const server = app.listen(port);
 //                             Mongoose
 ////////////////////////////////////////////////////////////////////////////////
 
-// const dbConString = process.env.MONGODB_URI || 'mongodb+srv://salman:pgjrdm04@cluster0-gyi3x.mongodb.net/test?retryWrites=true&w=majority';
-const dbConString = 'mongodb://localhost/chatApp';
+const dbConString = process.env.MONGODB_URI || 'mongodb+srv://salman:pgjrdm04@cluster0-gyi3x.mongodb.net/test?retryWrites=true&w=majority';
+// const dbConString = 'mongodb://localhost/chatApp';
 
 mongoose.connect(
    dbConString,
