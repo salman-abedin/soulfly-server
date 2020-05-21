@@ -66,19 +66,19 @@ app.use(express.json()); // JSON String to OBJECT
 const io = socketIO(server);
 io.on('connect', (socket) => {
 
-   Message.find()
-      .sort({ _id: -1 })
-      .limit(10)
-      .exec((err, messages) => {
-         if (err) return console.error(err);
-         console.log(messages);
-         socket.emit('init-messages', messages.reverse());
-      });
+   // Message.find()
+   //    .sort({ _id: -1 })
+   //    .limit(10)
+   //    .exec((err, messages) => {
+   //       if (err) return console.error(err);
+   //       console.log(messages);
+   //       socket.emit('init-messages', messages.reverse());
+   //    });
 
    socket.on('join', (name) => {
       users[socket.id] = name;
-      socket.broadcast.emit('usrJoin', Object.values(users), name);
       socket.emit('init-users', Object.values(users));
+      socket.broadcast.emit('usrJoin', Object.values(users), name);
    });
 
    socket.on('message', (data) => {
