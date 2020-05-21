@@ -14,15 +14,13 @@ const users = {};
 
 const app = express();
 const server = app.listen(port);
-// const server = app.listen(port, console.log('Server is running'));
 
 ////////////////////////////////////////////////////////////////////////////////
 //                             Mongoose
 ////////////////////////////////////////////////////////////////////////////////
 
-const dbConString = process.env.MONGODB_URI || 'mongodb+srv://salman:pgjrdm04@cluster0-gyi3x.mongodb.net/test?retryWrites=true&w=majority';
-
-// const dbConString = 'mongodb://localhost/chatApp';
+// const dbConString = process.env.MONGODB_URI || 'mongodb+srv://salman:pgjrdm04@cluster0-gyi3x.mongodb.net/test?retryWrites=true&w=majority';
+const dbConString = 'mongodb://localhost/chatApp';
 
 mongoose.connect(
    dbConString,
@@ -39,6 +37,7 @@ const MessageSchema = new mongoose.Schema({
    //    type: Date,
    //    default: Date.now,
    // },
+
 });
 
 const Message = mongoose.model('Message', MessageSchema);
@@ -52,11 +51,11 @@ app.use(express.json()); // JSON String to OBJECT
 // Get messages from DB
 app.get('/', (req, res) => {
 
-   res.send('Server is running')
+   // res.send('Server is running')
 
-   // Message.find()
-   //    .then((messages) => res.json(messages))
-   //    .catch((e) => res.status(500).json({ message: e.message }));
+   Message.find()
+      .then((messages) => res.json(messages))
+      .catch((e) => res.status(500).json({ message: e.message }));
 
 });
 
@@ -78,7 +77,6 @@ io.on('connect', (socket) => {
       users[socket.id] = name;
       socket.emit('init', Object.values(users));
       socket.broadcast.emit('usrJoin', Object.values(users), name);
-      // io.sockets.emit('usrJoin', Object.values(users), name);
    });
 
    socket.on('message', (data) => {
@@ -90,13 +88,13 @@ io.on('connect', (socket) => {
       socket.broadcast.emit('seen', data);
    });
 
-   socket.on('typing', (data) => {
-      socket.broadcast.emit('typing', data);
+   socket.on('typing', () => {
+      socket.broadcast.emit('typing');
    });
 
-   socket.on('typingStopped', (data) => {
-      socket.broadcast.emit('typing', data);
-   });
+   // socket.on('typingStopped', (data) => {
+   //    socket.broadcast.emit('typing', data);
+   // });
 
    socket.on('disconnect', () => {
       const name = users[socket.id];
