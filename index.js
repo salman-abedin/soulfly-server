@@ -1,8 +1,3 @@
-// import cors from 'cors';
-// import express from 'express';
-// import mongoose from 'mongoose';
-// import socketIO from 'socket.io';
-
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -32,12 +27,10 @@ const MessageSchema = new mongoose.Schema({
    name: String,
    id: String,
    content: String,
-
    // timestamp: {
    //    type: Date,
    //    default: Date.now,
    // },
-
 });
 
 const Message = mongoose.model('Message', MessageSchema);
@@ -48,24 +41,21 @@ const Message = mongoose.model('Message', MessageSchema);
 
 app.use(express.json()); // JSON String to OBJECT
 
-// Get messages from DB
-app.get('/', (req, res) => {
+// // Get messages from DB
+// app.get('/', (req, res) => {
+//    // res.send('Server is running')
+//    Message.find()
+//       .then((messages) => res.json(messages))
+//       .catch((e) => res.status(500).json({ message: e.message }));
+// });
 
-   // res.send('Server is running')
-
-   Message.find()
-      .then((messages) => res.json(messages))
-      .catch((e) => res.status(500).json({ message: e.message }));
-
-});
-
-// Get messages from DB
-app.post('/', (req, res) => {
-   new Message(req.body)
-      .save()
-      .then((message) => res.json(message))
-      .catch((e) => res.status(500).json({ message: e.message }));
-});
+// // Get messages from DB
+// app.post('/', (req, res) => {
+//    new Message(req.body)
+//       .save()
+//       .then((message) => res.json(message))
+//       .catch((e) => res.status(500).json({ message: e.message }));
+// });
 
 ////////////////////////////////////////////////////////////////////////////////
 //                             Socket
@@ -75,13 +65,22 @@ const io = socketIO(server);
 io.on('connect', (socket) => {
    socket.on('join', (name) => {
       users[socket.id] = name;
-      socket.emit('init', Object.values(users));
       socket.broadcast.emit('usrJoin', Object.values(users), name);
+
+      // socket.emit('init', Object.values(users));
+      Message.find()
+         .sort({_id: -1})
+         .limit(50)
+         .exec((err, messages) => {
+            if (err) return console.error(err);
+            console.log(messages);
+            socket.emit('init', Object.values(users), messages.reverse());
+         });
    });
 
    socket.on('message', (data) => {
       io.sockets.emit('message', data);
-      // new Message(data).save();
+      new Message(data).save((err) => console.log(err));
    });
 
    socket.on('seen', (data) => {
@@ -91,10 +90,6 @@ io.on('connect', (socket) => {
    socket.on('typing', () => {
       socket.broadcast.emit('typing');
    });
-
-   // socket.on('typingStopped', (data) => {
-   //    socket.broadcast.emit('typing', data);
-   // });
 
    socket.on('disconnect', () => {
       const name = users[socket.id];
