@@ -67,15 +67,17 @@ io.on('connect', (socket) => {
       users[socket.id] = name;
       socket.broadcast.emit('usrJoin', Object.values(users), name);
 
-      // socket.emit('init', Object.values(users));
-      Message.find()
-         .sort({_id: -1})
-         .limit(50)
-         .exec((err, messages) => {
-            if (err) return console.error(err);
-            console.log(messages);
-            socket.emit('init', Object.values(users), messages.reverse());
-         });
+      socket.emit('init', Object.values(users));
+
+      // Message.find()
+      //    .sort({_id: -1})
+      //    .limit(10)
+      //    .exec((err, messages) => {
+      //       if (err) return console.error(err);
+      //       console.log(messages);
+      //       socket.emit('init', Object.values(users), messages.reverse());
+      //    });
+
    });
 
    socket.on('message', (data) => {
