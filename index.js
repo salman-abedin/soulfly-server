@@ -1,7 +1,7 @@
-import cors from 'cors';
-import express from 'express';
-import mongoose from 'mongoose';
-import socketIO from 'socket.io';
+const cors = require('cors');
+const express = require('express');
+const mongoose = require('mongoose');
+const socketIO = require('socket.io');
 
 const port = process.env.PORT || 3001;
 
