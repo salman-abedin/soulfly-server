@@ -3,7 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import socketIO from 'socket.io';
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3001;
 
 const users = {};
 
@@ -55,7 +55,6 @@ io.on('connect', (socket) => {
       //       console.log(messages);
       //       socket.emit('init-messages', messages.reverse());
       //    });
-
    });
 
    socket.on('message', (data) => {

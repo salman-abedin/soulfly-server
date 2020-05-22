@@ -15,9 +15,9 @@
     "mongoose": "^5.9.11",
     "socket.io": "^2.3.0"
   },
-   "type": "module",
-   "engine": {
-      "node": "14.3.0", 
-      "npm": "6.14.5"
-   }
+  "type": "module",
+  "engine": {
+    "node": "14.3.0",
+    "npm": "6.14.5"
+  }
 }
